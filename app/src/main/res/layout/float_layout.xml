@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/float_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/floaticon"/>
+
+    <Button
+        android:background="@drawable/float_close2"
+        android:id="@+id/close_float"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="center_vertical|center_horizontal"/>
+
+</LinearLayout>
+    <ScrollView
+        android:visibility="gone"
+        android:id="@+id/scrollView"
+        android:layout_width="80dp"
+        android:layout_height="200dp">
+        <TextView
+            android:id="@+id/matrix"
+            android:background="#fff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </ScrollView>
+</LinearLayout>
