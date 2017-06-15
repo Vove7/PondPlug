@@ -1,8 +1,7 @@
 package cn.vove7.pond_plug.utils;
 
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
+
 import cn.vove7.pond_plug.FloatWindow;
 
 import java.util.ArrayList;
@@ -20,6 +19,11 @@ public class SimulateScreen {
     private int maBeginY;
     private int bumpHeight;
     private int bumpWidth;
+    private static int speed = 280;
+
+    public static void setSpeed(int speed) {
+        SimulateScreen.speed = speed;
+    }
 
     public SimulateScreen(FloatWindow floatWindow) {
         this.floatWindow = floatWindow;
@@ -32,55 +36,62 @@ public class SimulateScreen {
         maBeginY = (int) (width * 0.0486);
         int matrixHeight = (int) (height * 0.5109);
         int matrixWidth = (int) (width * 0.9048);
-        bumpHeight =(matrixHeight / (2 * N));
-        bumpWidth =(matrixWidth / (2 * N));
+        bumpHeight = (matrixHeight / (2 * N));
+        bumpWidth = (matrixWidth / (2 * N));
 
     }
 
     public void simulateOperate(ResponseMessage responseMessage) {
-        ArrayList<Step> steps=responseMessage.getSteps();
-        StringBuilder builder=new StringBuilder();
+        ArrayList<Step> steps = responseMessage.getSteps();
+        StringBuilder builder = new StringBuilder();
+
+        int bumpCoorY, bumpCoorX, stepNum, stepRate, beginX, beginY, endX, endY, plus,moveTime;
+        int deltX, deltY;//移动距离
+        String swipeCmd;
+
         for (Step step : steps) {
-            int bumpCoorY = step.getBumpCoor()[0];
-            int bumpCoorX = step.getBumpCoor()[1];//移动块坐标
-            int stepNum = step.getStepNum();//步数
-            int stepRate=(2*(stepNum-1)+1);
+            bumpCoorY = step.getBumpCoor()[0];
+            bumpCoorX = step.getBumpCoor()[1];//移动块坐标
+            stepNum = step.getStepNum();//步数
+            stepRate = (2 * (stepNum - 1) + 1);
 
-            int beginX = maBeginY + (2 * bumpCoorX + 1) * bumpWidth;
-            int beginY = maBeginX + (2 * bumpCoorY + 1) * bumpHeight;
-            int endX ;
-            int endY ;
+            beginX = maBeginY + (2 * bumpCoorX + 1) * bumpWidth;
+            beginY = maBeginX + (2 * bumpCoorY + 1) * bumpHeight;
 
-            switch (step.getDirection()){
+            //速度距离控制
+            plus = speed < 270&&stepNum!=1 ? (-20 - stepNum * 5) : speed > 330 ? (5 - stepNum) * 13 : 10;
+
+            deltX = bumpWidth * stepRate + plus;
+            deltY = bumpHeight * stepRate + plus;
+
+            switch (step.getDirection()) {
                 case 'U':
                     endX = beginX;
-                    endY = (beginY - bumpHeight * stepRate);
+                    endY = beginY - deltY;
                     break;
                 case 'D':
                     endX = beginX;
-                    endY = (beginY + bumpHeight * stepRate);
+                    endY = beginY + deltY;
                     break;
                 case 'R':
-                    endX = (beginX + bumpWidth * stepRate);
+                    endX = beginX + deltX;
                     endY = beginY;
                     break;
                 case 'L':
-                    endX = (beginX - bumpWidth * stepRate);
+                    endX = beginX - deltX;
                     endY = beginY;
                     break;
                 default:
-                    endX=endY=0;
+                    return;
             }
-//            int beginX = maBeginX + floatWindow.dp2px(pointX);
-//            int beginY = floatWindow.dp2px(pointY);
-            int moveTime=stepNum*300;
-            String swipeCmd = "input swipe " + beginX + " " + beginY + " " + endX + " " + endY+" "+moveTime+" \n";
+            moveTime = stepNum * speed;
+            swipeCmd = "input swipe " + beginX + " " + beginY + " " + endX + " " + endY + " " + moveTime + " \n";
             builder.append(swipeCmd);
         }
-        int beginX = maBeginY + (2 * responseMessage.getLastFishCoor()[1] + 1) * bumpWidth;
-        int beginY = maBeginX + (2 * responseMessage.getLastFishCoor()[0] + 1) * bumpHeight;
-        int endX = maBeginX+ 13*bumpWidth;
-        String lastCmd="input swipe " + beginX + " " + beginY + " " + endX + " " + beginY+" 300";
+        beginX = maBeginY + (2 * responseMessage.getLastFishCoor()[1] + 1) * bumpWidth;
+        beginY = maBeginX + (2 * responseMessage.getLastFishCoor()[0] + 1) * bumpHeight;
+        endX = maBeginX + 13 * bumpWidth;
+        String lastCmd = "input swipe " + beginX + " " + beginY + " " + endX + " " + beginY + " 300";
         builder.append(lastCmd);
 //        Log.d("swipeCmd",builder.toString());
         executeCmd(builder.toString());

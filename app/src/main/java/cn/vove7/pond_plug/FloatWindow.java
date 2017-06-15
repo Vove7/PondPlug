@@ -3,7 +3,9 @@ package cn.vove7.pond_plug;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.nfc.tech.IsoDep;
 import android.os.Build;
+import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
 import android.view.*;
 import android.widget.ImageView;
@@ -38,6 +40,13 @@ public class FloatWindow {
     private CaptureScreen captureScreen = null;
     private InternetHandler internetHandler;
     private SimulateScreen simulateScreen;
+    private Vibrator vibrator;
+    private static boolean isOpenVibrator=true;
+
+    public static void setOpenVibrator(boolean openVibrator) {
+        isOpenVibrator = openVibrator;
+    }
+
 
     public FloatWindow(final Context context, final View view) {
         this.context = context;
@@ -47,6 +56,7 @@ public class FloatWindow {
         internetHandler = new InternetHandler(context);
         captureScreen = new CaptureScreen(context);
 
+        vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);//震动
         simulateScreen=new SimulateScreen(this);
         showFloatWindow();
     }
@@ -109,7 +119,7 @@ public class FloatWindow {
                     case MotionEvent.ACTION_DOWN: {
                         //双击
                         long currentClickTime = new Date().getTime();
-                        if ((currentClickTime - lastClickTime) < 190) {
+                        if ((currentClickTime - lastClickTime) < 290) {
                             if (!isRunning) {
                                 isRunning = true;
                                 begin();
@@ -132,11 +142,14 @@ public class FloatWindow {
                 });
     }
 
-
     private void begin() {
-
         view.findViewById(R.id.scrollView).setVisibility(View.GONE);
-//        Toast.makeText(context, "开始运行.", Toast.LENGTH_SHORT).show();
+
+        if(isOpenVibrator) {
+            long[] pattern = {100, 200};   //停止 开启
+            vibrator.vibrate(pattern, -1); //震动一次
+        }
+        Toast.makeText(context, "开始运行.", Toast.LENGTH_SHORT).show();
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -144,9 +157,7 @@ public class FloatWindow {
                     isRunning = false;
                     return;
                 }
-
                 startNode = new Snode();
-
                 HandleScreen.scanPic(startNode);//处理截图
 
                 ResponseMessage responseMessage = internetHandler.postData(startNode);
@@ -169,7 +180,6 @@ public class FloatWindow {
         if (view == null) {
             initView();
             windowManager.addView(view, mParams);
-            //windowManager.addView(imageView,mParams);
         }
     }
 

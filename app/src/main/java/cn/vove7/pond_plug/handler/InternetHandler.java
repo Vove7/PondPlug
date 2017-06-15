@@ -37,6 +37,9 @@ public class InternetHandler {
 
     public ResponseMessage postData(Snode startNode) {
 
+        Message msg = new Message();
+        Bundle bundle = new Bundle();
+
         String jsonData=gson.toJson(startNode);//转换json
 
         OkHttpClient client = new OkHttpClient();
@@ -48,17 +51,18 @@ public class InternetHandler {
         try {
             Response response = client.newCall(request).execute();
 
-            Message msg = new Message();
-            Bundle bundle = new Bundle();
             if (response.isSuccessful()) {
-                bundle.putString("message", "请求发送成功");
+                String responseJson=response.body().string();
+//                Log.d("responseJson",responseJson);
+                ResponseMessage responseMessage=gson.fromJson(responseJson,ResponseMessage.class);
+
+                bundle.putString("message", responseMessage.getMessage()
+                        + (responseMessage.isHaveResult() ? "--"+responseMessage.getStepNum()+"步":"111"));
                 msg.setData(bundle);
                 handleMessage.sendMessage(msg);
-                String responseJson=response.body().string();
-                Log.d("responseJson",responseJson);
-                return gson.fromJson(responseJson,ResponseMessage.class);
+                return responseMessage;
             } else {
-                bundle.putString("message", "请求发送失败");
+                bundle.putString("message", "请求发送失败,请检查网络");
                 msg.setData(bundle);
                 handleMessage.sendMessage(msg);
                 return null;

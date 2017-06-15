@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">浅塘Plug</string>
+    <string name="show_float_window">显示悬浮窗</string>
+    <string name="remove_float_window">移除悬浮窗</string>
+    <string name="image_description">移除悬浮窗</string>
+    <string name="speed_text">速度:</string>
+    <string name="is_open_vibrator">开启震动</string>
 </resources>
