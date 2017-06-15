@@ -14,6 +14,16 @@ public class ResponseMessage {
     private String useTime;
     private ArrayList<Step> steps=new ArrayList<>();
 
+    private int[] lastFishCoor;
+
+    public int[] getLastFishCoor() {
+        return lastFishCoor;
+    }
+
+    public void setLastFishCoor(int[] lastFishCoor) {
+        this.lastFishCoor = lastFishCoor;
+    }
+
     public int getStepNum() {
         return stepNum;
     }

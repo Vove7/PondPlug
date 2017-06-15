@@ -1,6 +1,7 @@
 package cn.vove7.pond_plug.utils;
 
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import cn.vove7.pond_plug.FloatWindow;
 
@@ -36,16 +37,17 @@ public class SimulateScreen {
 
     }
 
-    public void simulateOperate(ArrayList<Step> steps) {
+    public void simulateOperate(ResponseMessage responseMessage) {
+        ArrayList<Step> steps=responseMessage.getSteps();
         StringBuilder builder=new StringBuilder();
         for (Step step : steps) {
-            int bumpCoorX = step.getBumpCoor()[0];
-            int bumpCoorY = step.getBumpCoor()[1];//移动块坐标
+            int bumpCoorY = step.getBumpCoor()[0];
+            int bumpCoorX = step.getBumpCoor()[1];//移动块坐标
             int stepNum = step.getStepNum();//步数
-            int stepRate=(2*(stepNum-1));
+            int stepRate=(2*(stepNum-1)+1);
 
-            int beginX = maBeginY + (2 * bumpCoorY + 1) * bumpWidth;
-            int beginY = maBeginX + (2 * bumpCoorX + 1) * bumpHeight;
+            int beginX = maBeginY + (2 * bumpCoorX + 1) * bumpWidth;
+            int beginY = maBeginX + (2 * bumpCoorY + 1) * bumpHeight;
             int endX ;
             int endY ;
 
@@ -71,9 +73,16 @@ public class SimulateScreen {
             }
 //            int beginX = maBeginX + floatWindow.dp2px(pointX);
 //            int beginY = floatWindow.dp2px(pointY);
-            String swipeCmd = "input swipe " + beginX + " " + beginY + " " + endX + " " + endY+" \n";
+            int moveTime=stepNum*300;
+            String swipeCmd = "input swipe " + beginX + " " + beginY + " " + endX + " " + endY+" "+moveTime+" \n";
             builder.append(swipeCmd);
         }
+        int beginX = maBeginY + (2 * responseMessage.getLastFishCoor()[1] + 1) * bumpWidth;
+        int beginY = maBeginX + (2 * responseMessage.getLastFishCoor()[0] + 1) * bumpHeight;
+        int endX = maBeginX+ 13*bumpWidth;
+        String lastCmd="input swipe " + beginX + " " + beginY + " " + endX + " " + beginY+" 300";
+        builder.append(lastCmd);
+//        Log.d("swipeCmd",builder.toString());
         executeCmd(builder.toString());
     }
 

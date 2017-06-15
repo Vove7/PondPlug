@@ -27,7 +27,8 @@ public class InternetHandler {
     public InternetHandler(Context context) {
         handleMessage=new MessageHandler(context);
         try {
-            url=new URL("http://172.20.53.229:8080/handlePond");
+            url=new URL("http://115.159.155.25/PondPlugServer/handlePond");
+//            url=new URL("http://172.20.53.229:8080/handlePond");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

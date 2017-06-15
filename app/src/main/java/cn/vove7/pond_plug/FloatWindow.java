@@ -152,7 +152,7 @@ public class FloatWindow {
                 ResponseMessage responseMessage = internetHandler.postData(startNode);
                 if(responseMessage!=null&&responseMessage.isHaveResult()){
                     //模拟屏幕操作
-                    simulateScreen.simulateOperate(responseMessage.getSteps());
+                    simulateScreen.simulateOperate(responseMessage);
                 }
                 //
 
