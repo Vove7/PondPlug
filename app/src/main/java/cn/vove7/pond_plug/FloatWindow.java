@@ -3,18 +3,15 @@ package cn.vove7.pond_plug;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.nfc.tech.IsoDep;
 import android.os.Build;
-import android.os.Vibrator;
+import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.view.*;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
-import cn.vove7.pond_plug.handler.MessageHandler;
-import cn.vove7.pond_plug.handler.InternetHandler;
-import cn.vove7.pond_plug.utils.*;
 
-import java.util.Date;
+import cn.vove7.pond_plug.handler.MessageHandler;
+import cn.vove7.pond_plug.threads.SearchThread;
 
 
 /**
@@ -23,46 +20,35 @@ import java.util.Date;
  */
 
 public class FloatWindow {
-    private static int position;
+    private static int posX;
+    private static int posY;
 
     static {
-        position = 40;
+        posX = 100;
+        posY = 200;
     }
 
-    private static long lastClickTime = new Date().getTime();
-    private static boolean isRunning = false;
+    //    private static long lastClickTime = new Date().getTime();
+    public static boolean isRunning = false;
     private Context context;
     private View view;
     private WindowManager windowManager = null;
     private WindowManager.LayoutParams mParams = null;
-    private Snode startNode;
-    private MessageHandler handler;
-    private CaptureScreen captureScreen = null;
-    private InternetHandler internetHandler;
-    private SimulateScreen simulateScreen;
-    private Vibrator vibrator;
-    private static boolean isOpenVibrator=true;
+    public static boolean isOpenVibrator = false;
+    private static MessageHandler messageHandler;
+    private SearchThread searchThread;
 
-    public static void setOpenVibrator(boolean openVibrator) {
+
+    static void setOpenVibrator(boolean openVibrator) {
         isOpenVibrator = openVibrator;
     }
 
 
-    public FloatWindow(final Context context, final View view) {
+    FloatWindow(final Context context, final View view) {
         this.context = context;
         this.view = view;
-
-        handler = new MessageHandler(context);
-        internetHandler = new InternetHandler(context);
-        captureScreen = new CaptureScreen(context);
-
-        vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);//震动
-        simulateScreen=new SimulateScreen(this);
+        messageHandler = new MessageHandler(context);
         showFloatWindow();
-    }
-
-    public Context getContext() {
-        return context;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -85,95 +71,70 @@ public class FloatWindow {
         mParams.format = PixelFormat.RGBA_8888;
         mParams.gravity = Gravity.TOP | Gravity.START;
 
-        mParams.x = dp2px(position);
-        mParams.y = dp2px(position);
+        mParams.x = posX;//dp2px(posX);
+        mParams.y = posY;//dp2px(posY);
 
         view = LayoutInflater.from(context).inflate(R.layout.float_layout, null);
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.float_icon);
 
-        imageView.setOnClickListener(new View.OnClickListener() {//点击事件，否则move事件不触发？
-            @Override
-            public void onClick(View v) {
-                //captureScreen_su();//截屏
-            }
+        imageView.setOnClickListener(v -> {
+            //captureScreen_su();//截屏
         });
-        imageView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                //simulateOperate();
-                return false;
-            }
+        imageView.setOnLongClickListener(v -> {
+            //simulateOperate();
+            return false;
         });
-        imageView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_MOVE: {
-                        //event.getRawX()  获取手指位置
-                        mParams.x = (int) event.getRawX() - imageView.getWidth() / 2;
-                        mParams.y = (int) event.getRawY() - imageView.getHeight() / 2;
-                        windowManager.updateViewLayout(view, mParams);
-                    }
-                    break;
-                    case MotionEvent.ACTION_DOWN: {
-                        //双击
-                        long currentClickTime = new Date().getTime();
-                        if ((currentClickTime - lastClickTime) < 290) {
-                            if (!isRunning) {
-                                isRunning = true;
-                                begin();
-                            } else {
-                                Toast.makeText(view.getContext(), "正在运行中，请稍后", Toast.LENGTH_SHORT).show();
-                            }
-                        } else lastClickTime = currentClickTime;
-                    }
-                    break;
+        imageView.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_MOVE: {
+                    //event.getRawX()  获取手指位置
+                    posX = mParams.x = (int) event.getRawX() - imageView.getWidth() / 2;
+                    posY = mParams.y = (int) event.getRawY() - imageView.getHeight() / 2;
+                    windowManager.updateViewLayout(view, mParams);
                 }
-                return false;
+                break;
+                case MotionEvent.ACTION_DOWN: {
+                    //双击
+                    /*long currentClickTime = new Date().getTime();
+                    if ((currentClickTime - lastClickTime) < 290) {
+                        //
+                    } else lastClickTime = currentClickTime;*/
+                }
+                break;
+            }
+            return false;
+        });
+
+        view.findViewById(R.id.close_float).setOnClickListener(v -> hideFloat());
+        //开始停止按钮
+        Button beginSearch = (Button) view.findViewById(R.id.begin_search);
+        messageHandler.setButton(beginSearch);
+        beginSearch.setOnClickListener(v -> {
+            if (!isRunning) {
+                isRunning = true;
+                changeBtnStatus(R.drawable.stop);
+                begin();
+            } else {
+                searchThread.interrupt();
+                changeBtnStatus(R.drawable.begin);
+                isRunning = false;
             }
         });
-        view.findViewById(R.id.close_float).
-                setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        hideFloat();
-                    }
-                });
+    }
+
+    public static void changeBtnStatus(int resid) {
+        Message msg = new Message();
+        msg.arg1 = 1;
+        msg.arg2 = resid;
+        messageHandler.sendMessage(msg);
+
     }
 
     private void begin() {
-        view.findViewById(R.id.scrollView).setVisibility(View.GONE);
-
-        if(isOpenVibrator) {
-            long[] pattern = {100, 200};   //停止 开启
-            vibrator.vibrate(pattern, -1); //震动一次
-        }
-        Toast.makeText(context, "开始运行.", Toast.LENGTH_SHORT).show();
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (!captureScreen.captureScreen_su()) {//截屏
-                    isRunning = false;
-                    return;
-                }
-                startNode = new Snode();
-                HandleScreen.scanPic(startNode);//处理截图
-
-                ResponseMessage responseMessage = internetHandler.postData(startNode);
-                if(responseMessage!=null&&responseMessage.isHaveResult()){
-                    //模拟屏幕操作
-                    simulateScreen.simulateOperate(responseMessage);
-                }
-                //
-
-                isRunning = false;//运行结束
-            }
-        });
-        thread.setPriority(Thread.MAX_PRIORITY);
-        thread.start();
-
-        //
+        searchThread = new SearchThread(context);
+        view.findViewById(R.id.scrollView).setVisibility(View.GONE);//保留
+        searchThread.start();
     }
 
     void showFloatWindow() {
@@ -189,10 +150,4 @@ public class FloatWindow {
             view = null;
         }
     }
-
-    public int dp2px(float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.1f);
-    }
-
 }

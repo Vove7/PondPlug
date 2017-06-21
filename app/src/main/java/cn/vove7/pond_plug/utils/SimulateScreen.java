@@ -1,5 +1,6 @@
 package cn.vove7.pond_plug.utils;
 
+import android.content.Context;
 import android.util.DisplayMetrics;
 
 import cn.vove7.pond_plug.FloatWindow;
@@ -14,21 +15,19 @@ import static cn.vove7.pond_plug.utils.Snode.N;
  */
 
 public class SimulateScreen {
-    private FloatWindow floatWindow;
     private int maBeginX;
     private int maBeginY;
     private int bumpHeight;
     private int bumpWidth;
-    private static int speed = 280;
+    private static int speed = 350;
 
     public static void setSpeed(int speed) {
         SimulateScreen.speed = speed;
     }
 
-    public SimulateScreen(FloatWindow floatWindow) {
-        this.floatWindow = floatWindow;
+    public SimulateScreen(Context context) {
 
-        DisplayMetrics metrics = floatWindow.getContext().getResources().getDisplayMetrics();
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 
         int height = metrics.heightPixels;//屏幕高
         int width = metrics.widthPixels;//屏幕宽

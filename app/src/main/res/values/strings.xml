@@ -5,4 +5,7 @@
     <string name="image_description">移除悬浮窗</string>
     <string name="speed_text">速度:</string>
     <string name="is_open_vibrator">开启震动</string>
+    <string name="internet_error">网络无法连接，请检查网络设置</string>
+    <string name="running_later">正在运行中，请稍后</string>
+    <string name="begin_run">开始运行.</string>
 </resources>

@@ -13,15 +13,20 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/floaticon"/>
-
+    <Button
+        android:id="@+id/begin_search"
+        android:background="@drawable/begin"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_gravity="center_vertical|center_horizontal" />
     <Button
         android:background="@drawable/float_close2"
         android:id="@+id/close_float"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_gravity="center_vertical|center_horizontal"/>
+        android:layout_gravity="center_horizontal"/>
 
 </LinearLayout>
     <ScrollView

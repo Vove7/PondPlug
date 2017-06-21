@@ -12,10 +12,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,31 +37,22 @@ public class MainActivity extends AppCompatActivity {
         ((GifView) findViewById(R.id.gifView)).setGifImage(R.drawable.gif);
 
         Button btn = (Button) findViewById(R.id.show_float_btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.DONUT)
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                } else if (Build.VERSION.SDK_INT > 22) {
-                    sdk23Permission();
-                } else {
-                    openFloatWindow();
-                }
-
+        btn.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(MainActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            } else if (Build.VERSION.SDK_INT > 22) {
+                sdk23Permission();
+            } else {
+                openFloatWindow();
             }
 
         });
 
         //震动控制
         CheckBox checkBox = (CheckBox) findViewById(R.id.isOpenVibrator);
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                FloatWindow.setOpenVibrator(isChecked);
-            }
-        });
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> FloatWindow.setOpenVibrator(isChecked));
 
         //速度控制
         speedText = (TextView) findViewById(R.id.speed_text);
@@ -86,12 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        findViewById(R.id.remove_float).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (floatWindow != null)
-                    floatWindow.hideFloat();
-            }
+        findViewById(R.id.remove_float).setOnClickListener(v -> {
+            if (floatWindow != null)
+                floatWindow.hideFloat();
         });
     }
 
