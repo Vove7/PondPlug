@@ -44,7 +44,7 @@ public class SimulateScreen {
         ArrayList<Step> steps = responseMessage.getSteps();
         StringBuilder builder = new StringBuilder();
 
-        int bumpCoorY, bumpCoorX, stepNum, stepRate, beginX, beginY, endX, endY, plus,moveTime;
+        int bumpCoorY, bumpCoorX, stepNum, stepRate, beginX, beginY, endX, endY, plus, moveTime;
         int deltaX, deltaY;//移动距离
         String swipeCmd;
 
@@ -58,7 +58,7 @@ public class SimulateScreen {
             beginY = maBeginX + (2 * bumpCoorY + 1) * bumpHeight;
 
             //速度距离控制
-            plus = speed < 370&&stepNum!=1 ? (-20 - stepNum * 5) : speed > 330 ? (5 - stepNum) * 13 : 10;
+            plus = stepNum == 1 ? (int)(0.1*speed-25) : speed < 370 ? (-25 - stepNum * 5) : speed > 370 ? (5 - stepNum) * 13 : 10;
 
             deltaX = bumpWidth * stepRate + plus;
             deltaY = bumpHeight * stepRate + plus;
