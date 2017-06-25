@@ -29,7 +29,7 @@ public class FloatWindow {
     }
 
     //    private static long lastClickTime = new Date().getTime();
-    public static boolean isRunning = false;
+    public boolean isRunning = false;
     private Context context;
     private View view;
     private WindowManager windowManager = null;
@@ -123,16 +123,16 @@ public class FloatWindow {
         });
     }
 
-    public static void changeBtnStatus(int resid) {
+    public void changeBtnStatus(int resId) {
         Message msg = new Message();
         msg.arg1 = 1;
-        msg.arg2 = resid;
+        msg.arg2 = resId;
         messageHandler.sendMessage(msg);
 
     }
 
     private void begin() {
-        searchThread = new SearchThread(context);
+        searchThread = new SearchThread(context,this);
         view.findViewById(R.id.scrollView).setVisibility(View.GONE);//保留
         searchThread.start();
     }

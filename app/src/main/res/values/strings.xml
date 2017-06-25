@@ -8,4 +8,6 @@
     <string name="internet_error">网络无法连接，请检查网络设置</string>
     <string name="running_later">正在运行中，请稍后</string>
     <string name="begin_run">开始运行.</string>
+    <string name="finish_run">运行结束</string>
+    <string name="operate_hint">请在浅塘游戏内使用</string>
 </resources>

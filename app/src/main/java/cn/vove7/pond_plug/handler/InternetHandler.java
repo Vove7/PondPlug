@@ -23,16 +23,14 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class InternetHandler {
-    private Context context;
     private Gson gson = new Gson();
     private static URL executeUrl = null;
     private static URL testUrl = null;
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private MessageHandler handleMessage;
+    private ToastHelper toastHelper;
 
     public InternetHandler(Context context) {
-        this.context=context;
-        handleMessage = new MessageHandler(context);
+        toastHelper=new ToastHelper(context);
         try {
             executeUrl = new URL("http://115.159.155.25/PondPlugServer/handlePond");
             testUrl = new URL("http://115.159.155.25/PondPlugServer");
@@ -59,12 +57,7 @@ public class InternetHandler {
     }
 
     public ResponseMessage postData(Snode startNode) {
-
-        Message msg = new Message();
-        Bundle bundle = new Bundle();
-
         String jsonData = gson.toJson(startNode);//转换json
-
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
@@ -76,21 +69,16 @@ public class InternetHandler {
                 .build();
         try {
             Response response = client.newCall(request).execute();
-
             if (response.isSuccessful()) {
                 String responseJson = response.body().string();
 //                Log.d("responseJson",responseJson);
                 ResponseMessage responseMessage = gson.fromJson(responseJson, ResponseMessage.class);
 
-                bundle.putString("message", responseMessage.getMessage()
+                toastHelper.showNotify(responseMessage.getMessage()
                         + (responseMessage.isHaveResult() ? "--" + responseMessage.getStepNum() + "步" : "111"));
-                msg.setData(bundle);
-                handleMessage.sendMessage(msg);
                 return responseMessage;
             } else {
-                bundle.putString("message",context.getString(R.string.internet_error));
-                msg.setData(bundle);
-                handleMessage.sendMessage(msg);
+                toastHelper.showNotify(R.string.internet_error);
                 return null;
             }
         } catch (IOException e) {

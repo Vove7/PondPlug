@@ -29,11 +29,11 @@ public class HandleScreen {
       int bumpWidth = (matrixWidth / (2 * N));// 1/2高度
 
       //
-      int[][] Matrix = new int[6][6];
+      int[][] Matrix = new int[N][N];
 
       int bumpNum = 1;
-      for (int i = 0; i < 6; i++) {
-         for (int j = 0; j < 6; j++) {
+      for (int i = 0; i < N; i++) {
+         for (int j = 0; j < N; j++) {
             if (Matrix[i][j] == 0) {
                int pointX = maBeginY + (2 * j + 1) * bumpWidth;
                int pointY = maBeginX + (2 * i + 1) * bumpHeight;
@@ -108,9 +108,9 @@ public class HandleScreen {
             }
          }
       }
-      StringBuilder builder = new StringBuilder();
-      for (int i = 0; i < 6; i++) {
-         for (int j = 0; j < 6; j++) {
+      /*StringBuilder builder = new StringBuilder();
+      for (int i = 0; i < N; i++) {
+         for (int j = 0; j < N; j++) {
             if (Matrix[i][j] < 10)
                builder.append("0").append(Matrix[i][j]).append("\t");
             else
@@ -118,7 +118,7 @@ public class HandleScreen {
          }
          builder.append("\n");
       }
-      Log.d("Matrix", builder.toString());
+      Log.d("Matrix", builder.toString());*/
 
       startNode.setBnum(bumpNum);
       startNode.setS(Matrix);
