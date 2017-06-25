@@ -1,8 +1,6 @@
 package cn.vove7.pond_plug.handler;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Message;
 
 import cn.vove7.pond_plug.R;
 import cn.vove7.pond_plug.utils.ResponseMessage;

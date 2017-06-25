@@ -45,7 +45,7 @@ public class SimulateScreen {
         StringBuilder builder = new StringBuilder();
 
         int bumpCoorY, bumpCoorX, stepNum, stepRate, beginX, beginY, endX, endY, plus,moveTime;
-        int deltX, deltY;//移动距离
+        int deltaX, deltaY;//移动距离
         String swipeCmd;
 
         for (Step step : steps) {
@@ -58,26 +58,26 @@ public class SimulateScreen {
             beginY = maBeginX + (2 * bumpCoorY + 1) * bumpHeight;
 
             //速度距离控制
-            plus = speed < 270&&stepNum!=1 ? (-20 - stepNum * 5) : speed > 330 ? (5 - stepNum) * 13 : 10;
+            plus = speed < 370&&stepNum!=1 ? (-20 - stepNum * 5) : speed > 330 ? (5 - stepNum) * 13 : 10;
 
-            deltX = bumpWidth * stepRate + plus;
-            deltY = bumpHeight * stepRate + plus;
+            deltaX = bumpWidth * stepRate + plus;
+            deltaY = bumpHeight * stepRate + plus;
 
             switch (step.getDirection()) {
                 case 'U':
                     endX = beginX;
-                    endY = beginY - deltY;
+                    endY = beginY - deltaY;
                     break;
                 case 'D':
                     endX = beginX;
-                    endY = beginY + deltY;
+                    endY = beginY + deltaY;
                     break;
                 case 'R':
-                    endX = beginX + deltX;
+                    endX = beginX + deltaX;
                     endY = beginY;
                     break;
                 case 'L':
-                    endX = beginX - deltX;
+                    endX = beginX - deltaX;
                     endY = beginY;
                     break;
                 default:

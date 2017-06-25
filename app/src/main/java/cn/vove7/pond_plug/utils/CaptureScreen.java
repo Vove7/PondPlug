@@ -4,10 +4,7 @@ import android.content.Context;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 
 /**
@@ -16,7 +13,6 @@ import android.util.Log;
  */
 
 public class CaptureScreen {
-   private Handler handler;
    private Context context;
 //   private static int resultCode = 1;
    private static final String Pic_Path = Environment.getExternalStorageDirectory().getPath() + "/pond.jpg";
@@ -34,14 +30,9 @@ public class CaptureScreen {
    }
 
    public boolean captureScreen_su() {
-      Message msg = new Message();
 //      Log.d("Pic_Path", Pic_Path);
       String pic_Path = "sdcard/pond.jpg";
-      if (RootCmd.rootCmd("screencap -p " + pic_Path)) {
-         return true;
-      } else {
-         return false;
-      }
+      return RootCmd.rootCmd("screencap -p " + pic_Path);
    }
 }
 

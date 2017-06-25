@@ -1,14 +1,11 @@
 package cn.vove7.pond_plug.threads;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Message;
 import android.os.Vibrator;
 
 import cn.vove7.pond_plug.FloatWindow;
 import cn.vove7.pond_plug.R;
 import cn.vove7.pond_plug.handler.InternetHandler;
-import cn.vove7.pond_plug.handler.MessageHandler;
 import cn.vove7.pond_plug.handler.ToastHelper;
 import cn.vove7.pond_plug.utils.CaptureScreen;
 import cn.vove7.pond_plug.utils.HandleScreen;
