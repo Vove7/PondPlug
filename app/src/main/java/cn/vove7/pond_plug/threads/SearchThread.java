@@ -70,8 +70,10 @@ public class SearchThread extends Thread {
         if (responseMessage != null && responseMessage.isHaveResult()) {//返回结果
             //模拟屏幕操作
             simulateScreen.simulateOperate(responseMessage);
+            toastHelper.showNotify(R.string.finish_run);
+        }else {
+            toastHelper.showNotify(R.string.no_result);
         }
-        toastHelper.showNotify(R.string.finish_run);
         finish();
     }
 

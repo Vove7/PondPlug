@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class InternetHandler {
     private Gson gson = new Gson();
     private static URL executeUrl = null;
-    private static URL testUrl = null;
+//    private static URL testUrl = null;
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private ToastHelper toastHelper;
 
@@ -31,17 +31,20 @@ public class InternetHandler {
         toastHelper=new ToastHelper(context);
         try {
             executeUrl = new URL("http://115.159.155.25/PondPlugServer/handlePond");
-            testUrl = new URL("http://115.159.155.25/PondPlugServer");
-//            executeUrl=new URL("http://172.20.53.240:8080/handlePond");
+//            testUrl = new URL("http://115.159.155.25/PondPlugServer");
+//            executeUrl=new URL("http://172.20.53.247:8080/handlePond");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
 
     public boolean testInternet() {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(3, TimeUnit.SECONDS)
+                .build();
         Request request = new Request.Builder()
-                .url(testUrl)
+                .url(executeUrl)
+                .get()
                 .addHeader("Connection", "close")
                 .build();
         try {
@@ -72,8 +75,7 @@ public class InternetHandler {
 //                Log.d("responseJson",responseJson);
                 ResponseMessage responseMessage = gson.fromJson(responseJson, ResponseMessage.class);
 
-                toastHelper.showNotify(responseMessage.getMessage()
-                        + (responseMessage.isHaveResult() ? "--" + responseMessage.getStepNum() + "步" : "111"));
+                toastHelper.showNotify((responseMessage.isHaveResult() ? "搜索成功--" + responseMessage.getStepNum() + "步" : "搜索失败"));
                 return responseMessage;
             } else {
                 toastHelper.showNotify(R.string.internet_error);

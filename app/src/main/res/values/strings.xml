@@ -10,4 +10,5 @@
     <string name="begin_run">开始运行.</string>
     <string name="finish_run">运行结束</string>
     <string name="operate_hint">请在浅塘游戏内使用</string>
+    <string name="no_result">无返回结果</string>
 </resources>
