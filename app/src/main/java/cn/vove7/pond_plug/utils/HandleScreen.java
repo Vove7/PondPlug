@@ -2,15 +2,15 @@ package cn.vove7.pond_plug.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Environment;
-import android.util.Log;
 
 import static cn.vove7.pond_plug.utils.Snode.N;
 
 
 /**
  * Created by Vove on 2017/5/4.
- *读取图像转换Snode
+ * 读取图像转换Snode
  */
 
 public class HandleScreen {
@@ -53,33 +53,35 @@ public class HandleScreen {
 
                   }
                   break;
-                  case 2: {
-                     Bump bump = startNode.getBumpByIndex(bumpNum);
+                  case 2:
+                     int nextPointY = maBeginX + (2 * i + 3) * bumpHeight;//下一区域
+                     if (i + 1 < N && judgeSeam(img, pointX, pointY, nextPointY, 2)) {
+                        //橙色纵向
+                        Bump bump = startNode.getBumpByIndex(bumpNum);
 
-                     bump.state = 'h';
-                     bump.coor[0] = i;
-                     bump.coor[1] = j;
+                        bump.state = 's';
+                        bump.coor[0] = i;
+                        bump.coor[1] = j;
+                        Matrix[i][j] = 1 + bumpNum;
+                        Matrix[i + 1][j] = 1 + bumpNum++;
 
-                     Matrix[i][j] = 1 + bumpNum;
-                     Matrix[i][j + 1] = 1 + bumpNum++;
-                  }
-                  break;
-                  case 3: {
-                     Bump bump = startNode.getBumpByIndex(bumpNum);
+                     } else {
+                        ////橙色横向
+                        Bump bump = startNode.getBumpByIndex(bumpNum);
 
-                     bump.state = 's';
-                     bump.coor[0] = i;
-                     bump.coor[1] = j;
-                     Matrix[i][j] = 1 + bumpNum;
-                     Matrix[i + 1][j] = 1 + bumpNum++;
+                        bump.state = 'h';
+                        bump.coor[0] = i;
+                        bump.coor[1] = j;
 
-                  }
-                  break;
+                        Matrix[i][j] = 1 + bumpNum;
+                        Matrix[i][j + 1] = 1 + bumpNum++;
+                     }
+                     break;
                   case 4: {
                      //
-                     int nextPointY = maBeginX + (2 * i + 3) * bumpHeight;//下一区域
+                     nextPointY = maBeginX + (2 * i + 3) * bumpHeight;
                      Matrix[i][j] = 1 + bumpNum;
-                     if (i + 2 < N && judgeSeam(img, pointX, pointY, nextPointY)) {
+                     if (i + 2 < N && judgeSeam(img, pointX, pointY, nextPointY, 4)) {
                         //蓝色纵向
                         Bump bump = startNode.getBumpByIndex(bumpNum);
 
@@ -125,25 +127,33 @@ public class HandleScreen {
    }
 
    //判断纵向分割
-   private static boolean judgeSeam(Bitmap img, int x, int yBegin, int yEnd) {
+   private static boolean judgeSeam(Bitmap img, int x, int yBegin, int yEnd, int color) {
       int m;
       for (m = yBegin; m < yEnd; m += 3) {
          int pixel = img.getPixel(x, m);
-         if (judgeBump(pixel) != 4) {
+         if (judgeBump(pixel) != color) {
             return false;//横
          }
       }
       return true;//竖
    }
 
-   private final static int[][] color = new int[][]{{-18637, 2}, {-216533, 3}, {-16217376, 4}, {-46518, 1}, {-1751482, 1}};
+   private final static int[][] color = new int[][]{
+           {230, 70, 70, 1}, {254, 180, 51, 2}, {254, 177, 45, 2}, {10, 133, 220, 4}
+   };
 
    private static int judgeBump(int pixel) {
-      //1->鱼块   2->(2-2)    3->(2|橙)  4->(蓝3)
+      int rValue = Color.red(pixel);
+      int gValue = Color.green(pixel);
+      int bValue = Color.blue(pixel);
+
+      //1->鱼块   2->(2-橙)    3->(2|橙)  4->(蓝3)
       for (int[] aColor : color) {
          //误差5
-         if (Math.abs(pixel - aColor[0]) < 50) {
-            return aColor[1];
+         if (Math.abs(rValue - aColor[0]) < 50&&
+                 Math.abs(gValue - aColor[1]) < 50&&
+                 Math.abs(bValue - aColor[2]) < 50) {
+            return aColor[3];
          }
       }
       return 0;

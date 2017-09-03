@@ -11,4 +11,12 @@
     <string name="finish_run">运行结束</string>
     <string name="operate_hint">请在浅塘游戏内使用</string>
     <string name="no_result">无返回结果</string>
+    <string name="no_root">无root权限</string>
+    <string name="help_text">帮助\n\n1、启动悬浮窗进入游戏（关卡）界面，点击开始按钮\n
+        2、注意使用默认皮肤\n
+        3、如果在自动操作时发生卡顿，适当调节速度滑块\n
+        4、等待进入关卡动画完全消失后再点击开始\n
+        ***此版本需要root***
+        </string>
+    <string name="copy_completed">已复制到剪切板</string>
 </resources>

@@ -1,5 +1,6 @@
 package cn.vove7.pond_plug;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -51,6 +52,7 @@ public class FloatWindow {
         showFloatWindow();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR2)
     private void initView() {
         if (windowManager == null) {

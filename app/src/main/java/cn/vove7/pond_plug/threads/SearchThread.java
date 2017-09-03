@@ -47,16 +47,17 @@ public class SearchThread extends Thread {
             return;
         }
 
-        toastHelper.showNotify(R.string.begin_run);
 
         if (isOpenVibrator) {
             long[] pattern = {100, 200};   //停止 开启
             vibrator.vibrate(pattern, -1); //震动一次
         }
         if (!captureScreen.captureScreen_su()) {//截屏
+            toastHelper.showNotify(R.string.no_root);
             finish();
             return;
         }
+        toastHelper.showNotify(R.string.begin_run);
         Snode startNode = new Snode();
         HandleScreen.scanPic(startNode);//处理截图
 

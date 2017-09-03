@@ -4,58 +4,82 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.ant.liao.GifView
-        android:id="@+id/gifView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/show_float_btn"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/show_float_window" />
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/remove_float"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/remove_float_window" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal"
-        android:padding="15dp">
-
-        <TextView
+        <com.ant.liao.GifView
+            android:id="@+id/gifView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/speed_text"
-            android:textSize="14sp" />
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
 
-        <SeekBar
-            android:id="@+id/seekBar"
-            android:layout_width="0dp"
+        <Button
+            android:id="@+id/show_float_btn"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:max="200" />
+            android:text="@string/show_float_window" />
 
-        <TextView
-            android:id="@+id/speed_text"
+        <Button
+            android:id="@+id/remove_float"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/remove_float_window" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/speed_text"
+                android:textSize="14sp" />
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="200" />
+
+            <TextView
+                android:id="@+id/speed_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="200"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/isOpenVibrator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100"
-            android:textSize="14sp" />
+            android:checked="false"
+            android:text="@string/is_open_vibrator" />
+
 
     </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/isOpenVibrator"
-        android:checked="false"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/is_open_vibrator"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/help_text" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/copy_num"
+        android:layout_width="match_parent"
+        android:layout_height="33dp"
+        android:gravity="center"
+        android:text="qq群:（点击复制）"/>
 </LinearLayout>

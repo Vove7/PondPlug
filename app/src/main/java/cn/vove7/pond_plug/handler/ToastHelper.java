@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 
-import cn.vove7.pond_plug.R;
 
 /**
  * Created by Administrator on 2017/6/25.
